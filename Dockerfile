@@ -1,28 +1,33 @@
-FROM apk add
+FROM php:8.3-fpm-alpine
 
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     git \
     unzip \
     curl \
     zip \
     libzip-dev \
     libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    libpq-dev \
-    libonig-dev \
+    jpeg-dev \
+    freetype-dev \
+    postgresql-dev \
+    oniguruma-dev \
     libxml2-dev \
     nodejs \
     npm
+
+RUN docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg
 
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
     pdo_pgsql \
-    zip \
+    bcmath \
     exif \
     pcntl \
-    bcmath
+    zip \
+    gd
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
